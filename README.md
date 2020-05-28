@@ -1,6 +1,10 @@
+![Breadcrumbs Logo](https://raw.githubusercontent.com/pjflanagan/breadcrumbs/master/_readme/header.png)
+
 # breadcrumbs
 
 Regular apps make it easy to find business and landmarks, but what about all the unregistered things? How do you find the best place to lay a towel down in the woods for a picnic, how do you find the roads best paved for rollerblading down?
+
+![Breadcrumbs Screenshots](https://raw.githubusercontent.com/pjflanagan/breadcrumbs/master/_readme/screenshots.png)
 
 ## SETUP
 1. Install Brew
@@ -22,7 +26,7 @@ show tables;
 | ------------- |:---------------------------------------:|
 | ID            | INT NOT NULL AUTO_INCREMENT PRIMARY KEY | INCORRECT (SEE user_table.sql)
 | USERNAME      | VARCHAR(12)                             |
-| COLOR         | VARCHAR(12)                             |
+| DEFAULT_COLOR | VARCHAR(12)                             |
 
 ## Mongo
 ```
