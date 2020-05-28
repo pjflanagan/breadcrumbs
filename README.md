@@ -51,4 +51,3 @@ THEME = {
   "purple": "#9212d5"
 }
 ```
-https://s3-us-west-2.amazonaws.com/sticks-and-stones/assets/marker-COLOR.png
