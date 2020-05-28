@@ -41,7 +41,9 @@ kill <running process id>
 ```
 
 ## COLORS
-Logo: #FFFFFF #E2923D
+
+Logo: `#FFFFFF` and `#E2923D`
+
 ```
 THEME = {
   "red":    "#",
