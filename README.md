@@ -9,9 +9,9 @@ Regular apps make it easy to find business and landmarks, but what about all the
 ## SETUP
 1. Install Brew
 2. Install Heroku CLI
-3. Run "pip install -r requirements.txt" (for Python 2.7)
-4. Run "heroku local web"
-5. Visit localhost:5000
+3. Run `pip install -r requirements.txt` (for Python 2.7)
+4. Run `heroku local web`
+5. Visit `localhost:5000`
 
 ## Login To SQL Server
 ```
