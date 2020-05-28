@@ -6,7 +6,7 @@ Regular apps make it easy to find business and landmarks, but what about all the
 
 ![Breadcrumbs Screenshots](https://raw.githubusercontent.com/pjflanagan/breadcrumbs/master/_readme/screenshots.png)
 
-## SETUP
+## Setup
 1. Install Brew
 2. Install Heroku CLI
 3. Run `pip install -r requirements.txt` (for Python 2.7)
@@ -21,26 +21,26 @@ use heroku_6b02ccad46cca00;
 show tables;
 ```
 
-### USERS
+### Users Table
 | COLUMN        | TYPE                                    |
 | ------------- |:---------------------------------------:|
 | ID            | INT NOT NULL AUTO_INCREMENT PRIMARY KEY | INCORRECT (SEE user_table.sql)
 | USERNAME      | VARCHAR(12)                             |
 | DEFAULT_COLOR | VARCHAR(12)                             |
 
-## Mongo
+## Login to Mongo
 ```
 mongo <host> -u <user> -p
 ```
 
-## RUN LOCALLY
+## Run Locally
 ```
 heroku local web
 ps -ax | grep gunicorn
 kill <running process id>
 ```
 
-## COLORS
+## Colors
 
 Logo: `#FFFFFF` and `#E2923D`
 
