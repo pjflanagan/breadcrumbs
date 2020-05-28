@@ -1,0 +1,10 @@
+**/*.pyc
+**/*.DS_Store
+.vscode
+test
+static/*/img
+Makefile
+queries
+static/*/open-iconic
+.env
+access.txt

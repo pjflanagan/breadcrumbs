@@ -1,0 +1,39 @@
+{
+	"in": "./static/unbundled/",
+	"out": "./static/",
+	"bundles": [
+		{
+			"comment": {
+				"start": "/*",
+				"end": "*/"
+			},
+			"in": [
+				"css/main.css",
+				"css/map.css",
+				"css/header.css",
+				"css/sidebar.css"
+			],
+			"out": "bundle.css"
+		},
+		{
+			"comment": {
+				"start": "//",
+				"end": ""
+			},
+			"in": [
+				"js/main.js",
+				"js/models/crumb.js",
+				"js/models/post.js",
+				"js/models/bounds.js",
+				"js/models/features.js",
+				"js/models/map.js",
+				"js/controllers/headerController.js",
+				"js/controllers/loginController.js",
+				"js/controllers/sidebarController.js",
+				"js/controllers/popupController.js",
+				"js/controllers/mapController.js"
+			],
+			"out": "bundle.js"
+		}
+	]
+}

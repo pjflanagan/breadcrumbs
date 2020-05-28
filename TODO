@@ -1,0 +1,97 @@
+
+http://zabana.me/notes/upload-files-amazon-s3-flask.html 
+
+Search
+- [ ] search/ route that takes a phrase and current coordinates then
+    - [ ] Searches for places using mapbox
+        - [ ] Returns a mapbox location suggestion
+        - [ ] Returns a mapbox lngLat
+    - [ ] Searches for posts using mongo
+        - [ ] Returns a post list
+
+Create
+- [ ] Don’t allow create when zoomed in too close or out too far
+- [ ] Give titles a max length
+- [ ] Upload images
+
+Marker
+- [ ] Markers deserve hover effect
+- [ ] Make sure they don’t overlap 
+    - [ ] https://css-tricks.com/collision-detection/
+    - [ ] https://stackoverflow.com/questions/4230029/jquery-javascript-collision-detection
+
+Popup Post
+- [x] Arrows: hover effect 
+    - [x] Make these look like little circles on the side of the popup 
+- [ ] Preload images
+- [x] Popup doesn’t work on mobile
+    - [x] try adding data-tap-disabled="true" on your map div
+- [x] Pop up doesn’t move to next point on click of new marker (annoying)
+- [ ] Buttons
+    - [ ] [LIKE | DISLIKE | COMMENT | SHARE <| DELETE> ]
+    - [x] Share
+        - [ ] Front end popup dialogue with social media links (maybe there’s a good tool for this)
+        - [ ] Backend
+            - [ ] Save a static map screenshot as image url for social media (this should be done on creation)
+
+Overall Appearance
+- [ ] Prevent page zoom (outside map)git 
+- [ ] Theme on mapbox (see map visual below)
+- [ ] Overall UI consistency 
+
+Map Visual
+- No street border just names on white, same for highways
+- Parks in deep green
+- Natural area in light green
+- Trails in orange 
+- Oceans river lakes in light blue
+- Landmarks in purple?
+
+Map
+1. Angular mapController 
+    - Shares to/from global state
+    - Takes user input
+2. JS class Map
+    - Middleman than holds extraneous map data
+    - Controls mapbox 
+3. Mapbox map
+    - Does what the map class says
+
+Overall Frontend
+- [ ] Convert to imported modules
+- [ ] move more of the scope variables into similar objects
+- [ ] Main factory should have one big return object rather than the weird list it currently is
+
+Overall Backend
+- [ ] upload images to s3: http://zabana.me/notes/upload-files-amazon-s3-flask.html
+- [x] Login 
+    - [x] needs more data checks 
+    - [x] Facebook (switch to flask plugin?)
+    - [ ] Email (ugh) 
+- [ ] Force logout on error / new version update
+- [ ] Helpers
+    - [ ] File uploader
+        - [ ] By url
+        - [ ] By JS?
+    - [ ] session variable and builds the index page’s default **options
+
+Overall Workflow
+- [ ] Tools folder
+    - [ ] S3 loader [make upload]
+        - [ ] bundle.js
+        - [ ] bundle.css 
+
+Mobile
+- [ ] pop up size and position
+- [ ] Pop up content
+- [ ] Marker click
+- [ ] Page zoom
+- [ ] Can’t even move map on mobile 
+- [ ] If the page is really thin, bring the point to the center bottom
+
+
+You can run this.functionName().then(function(){})
+As long as this.functionName returns Promise.resolve()
+
+
+

@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+	<!--META-->
+	<meta name="description" content="">
+	<meta name="keywords" content="map, discover, experience">
+	<meta name="author" content="pjflanagan1@gmail.com">
+
+	<!--TITLE-->
+	<title>breadcrumbs</title>
+	<link rel="shortcut icon" href="https://s3.amazonaws.com/breadcrumbs-map/static/img/favicon.png">
+
+	<!--JQUERY-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<!--BOOTSTRAP-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+	 crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+	 crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+	 crossorigin="anonymous"></script>
+
+	<!--ANGULAR-->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
+
+	<!--GOOGLE FONTS-->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css?family=Khula" rel="stylesheet">
+
+	<!--STYLE-->
+	<link rel="stylesheet" href="{{config.STATIC}}/bundle.css?v={{config.VERSION}}" />
+
+	<!--mapbox-->
+	<script src='https://api.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.js'></script>
+	<link href='https://api.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.css' rel='stylesheet' />
+
+	<!--JS-->
+	<script>
+		const CONST = {{ CONST | tojson | safe }};
+	</script>
+	<script src="{{config.STATIC}}/unbundled/js/packages/turf.min.js?v={{config.VERSION}}"></script>
+	<script src="{{config.STATIC}}/unbundled/js/packages/lodash.js?v={{config.VERSION}}"></script>
+	<script src="{{config.STATIC}}/bundle.js?v={{config.VERSION}}"></script>
+
+	<!--IOS-->
+	<link rel="apple-touch-icon" sizes="57x57" href="https://s3.amazonaws.com/breadcrumbs-map/static/img/icon-57.png" />
+	<link rel="apple-touch-icon" sizes="72x72" href="https://s3.amazonaws.com/breadcrumbs-map/static/img/icon-72.png" />
+	<link rel="apple-touch-icon" sizes="114x114" href="https://s3.amazonaws.com/breadcrumbs-map/static/img/icon-114.png" />
+	<link rel="apple-touch-icon" sizes="144x144" href="https://s3.amazonaws.com/breadcrumbs-map/static/img/icon-144.png" />
+
+	<!--SOCIAL MEDIA-->{% if post %}
+	<!-- FACEBOOK -->
+	<!--meta property="og:url" content="" />
+	<meta property="og:image" content="" /-->
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="{{post['title']}} - Breadcrumbs" />
+	<meta property="og:description" content="{{post['crumbs'][crumb_index]['body']}}" />
+
+	<!-- TWITTER -->
+	<!--<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site"           content="@" />
+	<meta name="twitter:creator" 		content="@"-->
+	<meta name="twitter:title" content="{{post['title']}} - Breadcrumbs" />
+	<meta name="twitter:description" content="{{post['crumbs'][crumb_index]['body']}}" />
+	<meta name="twitter:image" content="" /> {% else %}
+
+	<!-- FACEBOOK -->
+	<!--meta property="og:url" content="" /-->
+	<meta property="og:image" content="https://s3.amazonaws.com/breadcrumbs-map/static/img/social-media-fb.png" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Breadcrumbs" />
+	<meta property="og:description" content="Leave a trail!" />
+
+	<!-- TWITTER -->
+	<!--<meta name="twitter:site"           content="@" />
+	<meta name="twitter:creator" 		content="@"-->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Breadcrumbs" />
+	<meta name="twitter:description" content="Leave a trail!" />
+	<meta name="twitter:image" content="https://s3.amazonaws.com/breadcrumbs-map/static/img/social-media-tw.png" /> {%
+	endif %}
+
+	<!-- Google+ / Schema.org -
+	<meta itemprop="name" content="breadcrumbs" />
+	<meta itemprop="description" content="leave a trail!" />
+	<meta itemprop="image" content="" />
+
+	<!- EMOJI
+	<script src="//twemoji.maxcdn.com/twemoji.min.js"></script-->
+
+
+</head>
+
+<body ng-app="breadcrumbs">
+	<div class="container header fixed-top noselect" ng-controller="headerController" ng-init="init()">
+		<div id="loading"></div>
+		<div class="row">
+			<div class="box nav">
+				<svg focusable="false" viewBox="0 0 24 24">
+					<path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
+				</svg>
+			</div>
+			<div class="box head">
+				<span class="link navbar-brand" href="#" ng-click="locate()">
+					breadcrumbs
+				</span>
+			</div>
+			{% if screen_name != "login" %}
+			<div class="box search">
+				<input id="search-bar" type="text" placeholder="search" ng-model="searchQuery" ng-keydown="searchInput($event)" />
+			</div>
+			{% endif %}
+			<div class="box nav-right">
+				{% if screen_name == "anonymous" %}
+				<a class="btn btn-primary" href="/login" role="button">login / signup</a>
+				{% elif screen_name == "login" %}
+				<span></span>
+				{% else %}
+				<div class="box nav" id="add" data-toggle="tooltip" data-placement="bottom" data-original-title="[[createPrompt]]">
+					<div class="circle" ng-click="toggleMode()" ng-class="{cancel: isCreateMode}">
+						<svg class="iconic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+							<path d="M3 0v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2z" />
+						</svg>
+					</div>
+				</div>
+				<div class="box nav" id="notification" data-toggle="tooltip" data-placement="bottom" title="notifications">
+					<div class="circle">
+						<svg class="iconic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+							<path d="M4 0c-1.1 0-2 .9-2 2 0 1.04-.52 1.98-1.34 2.66-.41.34-.66.82-.66 1.34h8c0-.52-.24-1-.66-1.34-.82-.68-1.34-1.62-1.34-2.66 0-1.1-.89-2-2-2zm-1 7c0 .55.45 1 1 1s1-.45 1-1h-2z" />
+						</svg>
+					</div>
+				</div>
+				<div class="box nav">
+					<img class="dropdown-toggle" role="button" id="dropdownIcon" src="https://s3.amazonaws.com/{{config.S3_BUCKET}}/icon/{{user_id}}.jpg"
+					 data-toggle=" dropdown " aria-haspopup="true " aria-expanded="false ">
+
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	{% block content %}{% endblock %}
+
+	<!--TRACKING CODE-
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-66104630-4 "></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-66104630-4');
+		</script-->
+</body>
+
+</html>

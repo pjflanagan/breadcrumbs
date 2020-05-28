@@ -1,0 +1,320 @@
+{% extends "base.html" %} {% block content %}
+<div class="container map">
+	<div class="row map-margin-top"></div>
+	<div class="row map-holder">
+		<div id='map' ng-controller="mapController" ng-init="init({{center.lng}}, {{center.lat}}, {{zoom}})"></div>
+	</div>
+</div>
+<div id="popup" ng-controller="popupController" class="invisible" ng-init="init()" ng-class="(initVisibility) ? 'visible' : ''">
+	<div class="post-header">
+		<div class="post-title-row">
+			<h3>[[post.title]]</h3>
+		</div>
+	</div>
+	<div class="post-author">
+		<div class="author-holder">
+			<div class="image-holder">
+				<img ng-src="https://s3.amazonaws.com/breadcrumbs-map/icon/[[post.author_user_id]].jpg" />
+			</div>
+			<div class="name-holder">
+				<div class="name">
+					[[post.author_full_name]]
+				</div>
+				<div class="handle">
+					[[post.author_screen_name]]
+				</div>
+			</div>
+		</div>
+		<div class="date-holder">
+			[[formattedTimestamp]]
+		</div>
+	</div>
+	<div class="post-body">
+		<div class="arrow-holder" ng-click="left()">
+			<svg xmlns="http://www.w3.org/2000/svg" ng-show="(prev === 0) ? false : true" width="8" height="8" viewBox="0 0 8 8">
+				<path d="M4 0l-4 4 4 4v-8z" transform="translate(2)" />
+			</svg>
+		</div>
+		<div class="text-holder">
+			<p>[[crumb.body]]</p>
+		</div>
+		<div class="arrow-holder" ng-click="right()">
+			<svg xmlns="http://www.w3.org/2000/svg" ng-show="(next === 0) ? false : true" width="8" height="8" viewBox="0 0 8 8">
+				<path d="M0 0v8l4-4-4-4z" transform="translate(2)" />
+			</svg>
+		</div>
+	</div>
+</div>
+{% if screen_name == "anonymous" %}
+<span></span>
+{% else %}
+<div class="container feed">
+	<div class="row">
+		<div class="col col-12 col-md-7 col-lg-8"></div>
+		<div class="col col-12 col-md-5 col-lg-4" id="sidebar" ng-controller="sidebarController">
+			<div class="card create" ng-init="init()" ng-class="(isCreateMode) ? 'create-show' : 'create-hide'">
+				<p ng-click="toggleMode()" ng-class="(isCreateMode) ? 'hide' : 'show'">create new post</p>
+				<input type="text" placeholder="title" ng-model="newPost.title" />
+				<div class="toggler">
+					<div ng-class="(visibility=='PUBLIC') ? 'option selected' : 'option'" ng-click="changeVisibility('PUBLIC')">public</div>
+					<div ng-class="(visibility=='ANONYMOUS') ? 'option selected' : 'option'" ng-click="changeVisibility('ANONYMOUS')">anonymous</div>
+					<div ng-class="(visibility=='PRIVATE') ? 'option selected' : 'option'" ng-click="changeVisibility('PRIVATE')">private</div>
+				</div>
+				<p ng-show="(newPost.crumbs.length === 0)">click map to drop a crumb</p>
+				<div class="text" ng-repeat="crumb in newPost.crumbs track by $index">
+					<div class="marker-holder">
+						<div class="marker purple sidebar" ng-class="
+							(focusIndex === $index) ? 'focus marker-lg' : 
+							(newPost.crumb($index).hasBody()) ? 'marker-lg' : 'marker-sm'">
+						</div>
+						<div ng-hide="(0 === $index)" class="line purple"></div>
+					</div>
+					<div class="text-holder">
+						<textarea class="text-input" placeholder="add details" ng-keydown="keydown($index, $event)" ng-focus="focus($index)" ng-blur="blur($index)"
+						 ng-model="crumb.body"></textarea>
+					</div>
+				</div>
+				<div class="button-row">
+					<div class="button-holder">
+						<div class="button" ng-click="cancel()">cancel</div>
+					</div>
+					<div class="button-holder">
+						<div class="button" ng-class="(newPost.validate()) ? 'valid' : 'invalid' " ng-click="post()">[[(newPost.length() > 1) ? "leave trail" : "drop crumb"]]</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endif %}
+<!--custom map styles-->
+<!--link rel="stylesheet" href="{{config.STATIC}}/css/map.css?v={{config.VERSION}}" FIXME: the marker stuff has to be here for some reason (the popup might not)-->
+<style>
+	.purple {
+		background: #392fc5;
+		border: 2px solid #4d43da;
+	}
+
+	.marker {
+		background-size: cover;
+		border-radius: 50%;
+		width: 8px;
+		height: 8px;
+		transition: background-color .2s;
+		-webkit-transition: background-color .2s;
+	}
+
+	/* small post */
+
+	.marker.marker-sm {
+		width: 10px;
+		height: 10px;
+		cursor: pointer;
+	}
+
+	/* large post */
+
+	.marker.marker-lg {
+		width: 14px;
+		height: 14px;
+		cursor: pointer;
+	}
+
+	/* draft body*/
+
+	.marker.focus {
+		background: #FFF;
+	}
+
+	/*.marker.added {
+		pointer-events: none;
+		/* this will make drag events impossible, instead do marker.on("click")? 
+	}*/
+
+	.marker p.post-title {
+		color: #000;
+		font-size: 14px;
+		text-shadow: -1px 0 #FFFC, 0 1px #FFFC, 1px 0 #FFFC, 0 -1px #FFFC;
+		text-align: center;
+		margin: -20px -100%;
+		white-space: nowrap;
+	}
+
+	/* TODO: Marker new markers should not clickable accidentally layer two new makers -> duplicate posts */
+
+	#popup.invisible {
+		visibility: hidden;
+	}
+
+	#popup.visible {
+		visibility: visible !important;
+	}
+
+	.mapboxgl-popup {
+		width: 90%;
+		max-width: 400px;
+	}
+
+	.mapboxgl-popup-content {
+		background: #fffffff1;
+		padding: 0px;
+	}
+
+	.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+	.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip,
+	.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+		border-top-color: #00000018 !important;
+	}
+
+	.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+		border-right-color: #00000018 !important;
+	}
+
+	.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+	.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+	.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+		border-bottom-color: #00000018 !important;
+	}
+
+	.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+		border-left-color: #00000018 !important;
+	}
+
+
+	.mapboxgl-popup-close-button {
+		color: #FFF;
+		border-radius: 50%;
+	}
+
+	.mapboxgl-popup-content div.post-header {
+		width: 100%;
+		background: #392fc5;
+		min-height: 96px;
+		border-radius: 3px 3px 0 0;
+	}
+
+	.mapboxgl-popup-content div.post-header div.post-title-row {
+		height: 42px;
+		width: 100%;
+		margin-top: 54px;
+		position: absolute;
+		display: flex;
+		-moz-box-shadow: inset 0 -23px 40px -6px #00000044;
+		-webkit-box-shadow: inset 0 -23px 40px -6px #00000044;
+		box-shadow: inset 0 -23px 40px -6px #00000044;
+	}
+
+	.mapboxgl-popup-content div.post-header div.post-title-row h3 {
+		height: 50px;
+		padding: 9px;
+		font-size: 18px;
+		color: #FFF;
+	}
+
+	.mapboxgl-popup-content div.post-author {
+		display: flex;
+		justify-content: space-between;
+		min-height: 50px;
+		margin: 5px 0 5px 0;
+	}
+
+	.mapboxgl-popup-content div.post-author div.author-holder {
+		width: 100%;
+		max-height: 50px;
+		display: flex;
+	}
+
+	.mapboxgl-popup-content div.post-author div.author-holder div.image-holder {
+		width: 50px;
+		height: 50px;
+		align-items: center;
+		justify-content: center;
+		display: flex;
+		margin-left: 5px;
+	}
+
+	.mapboxgl-popup-content div.post-author div.author-holder div.image-holder img {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+	}
+
+	.mapboxgl-popup-content div.post-author div.author-holder div.name-holder {
+		padding: 8px 0 0 4px;
+	}
+
+	.mapboxgl-popup-content div.post-author div.author-holder div.name-holder div.name {
+		font-size: 18px;
+	}
+
+	.mapboxgl-popup-content div.post-author div.author-holder div.name-holder div.handle {
+		color: #0009;
+	}
+
+	.mapboxgl-popup-content div.post-author div.date-holder {
+		min-width: 100px;
+		min-height: 100%;
+		align-items: center;
+		justify-content: center;
+		display: flex;
+		text-align: center;
+		color: #0009;
+	}
+
+	.mapboxgl-popup-content div.post-body {
+		width: 100%;
+		display: flex;
+	}
+
+	.mapboxgl-popup-content div.post-body div.arrow-holder {
+		min-width: 20px;
+		align-items: center;
+		justify-content: center;
+		display: flex;
+	}
+
+	.mapboxgl-popup-content div.post-body div.arrow-holder:hover {
+		cursor: pointer;
+	}
+
+	.mapboxgl-popup-content div.post-body div.text-holder {
+		width: 100%;
+	}
+
+	.mapboxgl-popup-content div.post-body div.text-holder p {
+		line-height: 16px;
+		padding: 10px;
+		font-size: 16px;
+	}
+
+	.mapboxgl-popup-content.small {
+		background: #000a;
+		color: #FFF;
+		padding: 8px 16px 2px 10px;
+	}
+
+	.mapboxgl-popup.small {
+		max-width: 400px;
+		text-align: center;
+	}
+
+	h3.small {
+		font-size: 14px;
+	}
+</style>
+
+{% if post %}
+<script>
+	INIT = {};
+	INIT.POST = {{ post | tojson | safe }};
+	INIT.CRUMB = {{ crumb | tojson | safe }};
+</script> {% else %}
+<script>
+	INIT = {};
+	INIT.POST = 0;
+	INIT.CRUMB = 0;
+</script> {% endif %}
+<!--https://www.mapbox.com/install/js/cdn-complete/-->
+
+<!--script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJG-J7KkbT1YVYTC0liV5Yvurmdm0lKG4&callback=driver" async defer></script-->
+{% endblock %}
