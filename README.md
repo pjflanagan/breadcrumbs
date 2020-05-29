@@ -1,8 +1,8 @@
 ![Breadcrumbs Logo](https://raw.githubusercontent.com/pjflanagan/breadcrumbs/master/_readme/header.png)
 
-# breadcrumbs
+# Breadcrumbs
 
-Regular apps make it easy to find business and landmarks, but what about all the unregistered things? How do you find the best place to lay a towel down in the woods for a picnic, how do you find the roads best paved for rollerblading down?
+Other map apps make it easy to find nearby business and landmarks, but what about all the unregistered things? How do you find the best place to lay a towel down in the woods for a picnic, how do you find the roads best paved for rollerblading on? Breadcrumbs makes it easy to share and find all the beautiful little parts of the world.
 
 ![Breadcrumbs Screenshots](https://raw.githubusercontent.com/pjflanagan/breadcrumbs/master/_readme/screenshots.png)
 
