@@ -17,7 +17,7 @@ Other map apps make it easy to find nearby business and landmarks, but what abou
 ```
 mysql -h <host> -u <user> -p
 <password>
-use heroku_6b02ccad46cca00;
+use <db>;
 show tables;
 ```
 
